@@ -7,11 +7,13 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("MainPanel.fxml"));
         primaryStage.setTitle("APD_PROJECT");
         Scene scene = new Scene(root, 1680, 720);
         primaryStage.setResizable(false);

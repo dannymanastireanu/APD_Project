@@ -1,10 +1,10 @@
 /*Style sheet for window*/
 
 .chart-vertical-zero-line {
-    -fx-stroke: white;
+    -fx-stroke: #fff105;
 }
 .chart-horizontal-zero-line {
-    -fx-stroke: white;
+    -fx-stroke: #ffef00;
 }
 
 .chart-plot-background {
