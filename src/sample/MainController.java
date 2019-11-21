@@ -1,18 +1,32 @@
 package sample;
 
 import Graphics.SignalGraph;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
+import javafx.scene.PointLight;
+import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Slider;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.*;
+import javafx.scene.effect.Light;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class MainController {
+
+    @FXML
+    private AnchorPane AnchorPaneID;
+    @FXML
+    private NumberAxis xAxisSignalID, yAxisSignalID, xAxisProcessedSignalID, yAxisProcessedSignalID;
     @FXML
     private Button buttonGenerateSignal;
     @FXML
@@ -25,20 +39,40 @@ public class MainController {
     @FXML
     private Slider sliderStep;
     @FXML
-    private Label labelSlider;
+    private Label labelSlider, labelXYSignal, labelXYProcessedSignal;
+
+    private int endIntv = 32;
+
+    private final Rectangle zoomRect = new Rectangle();
+    private final Rectangle zoomRectProcessedSignal = new Rectangle();
+
 
 
     public void init() {
         labelSlider.setVisible(true);
+        labelXYProcessedSignal.setVisible(true);
+        labelXYSignal.setVisible(true);
+
         labelSlider.setText(String.format(sliderStep.valueProperty().getValue().toString(), ".2f"));
-        Double valueSlider = sliderStep.getValue();
+        Double valueSlider = 1 / sliderStep.getValue();
 
         //  check value not be 0.0
         if(valueSlider == 0.0)
             valueSlider += 0.1;
 
-        signalGraph = new SignalGraph(signalId, valueSlider, 20);
-        signalGraphProcessed = new SignalGraph(processedSignalId, valueSlider, 20);
+        signalGraph = new SignalGraph(signalId, valueSlider, endIntv);
+        signalGraphProcessed = new SignalGraph(processedSignalId, valueSlider, endIntv);
+
+
+        zoomRect.setManaged(false);
+        zoomRect.setFill(Color.LIGHTSEAGREEN.deriveColor(0, 1, 1, 0.5));
+        AnchorPaneID.getChildren().add(zoomRect);
+        setUpZooming(zoomRect, signalId, false);
+
+        zoomRectProcessedSignal.setManaged(false);
+        zoomRectProcessedSignal.setFill(Color.LIGHTSEAGREEN.deriveColor(0, 1, 1, 0.5));
+        AnchorPaneID.getChildren().add(zoomRectProcessedSignal);
+        setUpZooming(zoomRectProcessedSignal, processedSignalId, true);
     }
 
     public void onNewFile(ActionEvent event) {
@@ -49,7 +83,10 @@ public class MainController {
     public void onLoadFile(ActionEvent event) {
         //  load graph from disk
         signalGraph.loadFromFile();
-        signalGraph.plotGraphOneSingleAxes();
+        yAxisSignalID.setLowerBound(signalGraph.getMinValue() - 1.0);
+        yAxisSignalID.setUpperBound(signalGraph.getMaxValue() + 1.0);
+        xAxisSignalID.setUpperBound(signalGraph.getNoPoints() * 1.0/sliderStep.getValue());
+        signalGraph.plotGraphOneSingleAxes(sliderStep.getValue());
     }
 
     public void onSaveFile(ActionEvent event) {
@@ -66,7 +103,12 @@ public class MainController {
     }
 
     public void onAboutProgram(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About program");
+        alert.setHeaderText(null);
+        alert.setContentText("I have a great program for signal processing!");
 
+        alert.showAndWait();
     }
 
     public void onMouseSlide(MouseEvent mouseEvent) {
@@ -81,7 +123,13 @@ public class MainController {
     public void onDerivate(ActionEvent event) {
         //  plot derivative graph
 
-        signalGraph.derivateValuesFromGraph(signalGraphProcessed, sliderStep.getValue(), 20);
+        signalGraph.derivateValuesFromGraph(signalGraphProcessed, 1.0 / sliderStep.getValue(), sliderStep.getValue());
+
+        //  temporary i will keep this
+        yAxisProcessedSignalID.setLowerBound(signalGraphProcessed.getMinValue() - 1.0);
+        yAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getMaxValue() + 1.0);
+
+        xAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getNoPoints() * 1/sliderStep.getValue());
 
     }
 
@@ -98,16 +146,103 @@ public class MainController {
     }
 
     public void onIntegrate(ActionEvent event) {
-        signalGraph.integrateValuesFromGraph(signalGraphProcessed, sliderStep.getValue(), 20);
+        signalGraph.integrateValuesFromGraph(signalGraphProcessed, 1.0 /sliderStep.getValue(), sliderStep.getValue());
+
+        //  temporary i will keep this
+        yAxisProcessedSignalID.setLowerBound(signalGraphProcessed.getMinValue() - 1.0);
+        yAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getMaxValue() + 1.0);
+        xAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getNoPoints() * 1/sliderStep.getValue());
     }
 
     public void onLowPass(ActionEvent event) {
-        double[] filter = {0.0, 1.0, 0.0};
-        signalGraph.applyFilter(signalGraphProcessed, sliderStep.getValue(), 20, filter, 3);
+        double[] filter = {1/3.0, 1/3.0, 1/3.0};
+        signalGraph.applyFilter(signalGraphProcessed, 1.0 /sliderStep.getValue(), filter, 3, sliderStep.getValue());
+
+        //  temporary i will keep this
+        yAxisProcessedSignalID.setLowerBound(signalGraphProcessed.getMinValue() - 1.0);
+        yAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getMaxValue() + 1.0);
+        xAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getNoPoints() * 1/sliderStep.getValue());
     }
 
     public void onHighPass(ActionEvent event) {
-        double[] filter = {1/2, 1/2, 1/2};
-        signalGraph.applyFilter(signalGraphProcessed, sliderStep.getValue(), 20, filter, 3);
+        double[] filter = {-1 / 3.0, 2/3.0, -1/3.0};
+        signalGraph.applyFilter(signalGraphProcessed, 1.0 /sliderStep.getValue(), filter, 3, sliderStep.getValue());
+
+        //  temporary i will keep this
+        yAxisProcessedSignalID.setLowerBound(signalGraphProcessed.getMinValue() - 1.0);
+        yAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getMaxValue() + 1.0);
+        xAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getNoPoints() * 1/sliderStep.getValue());
+    }
+
+    public void onLoadFileButton(ActionEvent event) {
+
+        signalGraph.loadFromFile("D:\\A.C\\APD\\APD_P\\signal_test.txt");
+
+        yAxisSignalID.setLowerBound(signalGraph.getMinValue() - 1.0);
+        yAxisSignalID.setUpperBound(signalGraph.getMaxValue() + 1.0);
+        xAxisSignalID.setUpperBound(signalGraph.getNoPoints() * 1.0/sliderStep.getValue());
+        signalGraph.plotGraphOneSingleAxes(sliderStep.getValue());
+    }
+
+    public void onZoomSignal(ActionEvent event) {
+        signalGraph.zoomOnRectangle(new Rectangle(zoomRect.getX(), zoomRect.getY(), zoomRect.getWidth(), zoomRect.getHeight()), xAxisSignalID, yAxisSignalID);
+        zoomRect.setFill(null);
+    }
+
+    private void setUpZooming(final Rectangle rect, final Node zoomingNode, boolean isRight) {
+        final ObjectProperty<Point2D> mouseAnchor = new SimpleObjectProperty<>();
+        zoomingNode.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                mouseAnchor.set(new Point2D(event.getX(), event.getY()));
+                rect.setWidth(0);
+                rect.setHeight(0);
+            }
+        });
+        zoomingNode.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+                zoomRect.setFill(Color.LIGHTSEAGREEN.deriveColor(0, 1, 1, 0.5));
+                double x = event.getX() ;
+                double y = event.getY();
+                if(isRight) {
+                    rect.setX(Math.min(x + 865, mouseAnchor.get().getX()) + 865);
+                } else {
+                    rect.setX(Math.min(x + 15, mouseAnchor.get().getX()) + 15);
+                }
+                rect.setY(Math.min(y + 36, mouseAnchor.get().getY()) + 36);
+                rect.setWidth(Math.abs(x - mouseAnchor.get().getX()));
+                rect.setHeight(Math.abs(y - mouseAnchor.get().getY()));
+            }
+        });
+
+    }
+
+    public void onResetZoomSignal(ActionEvent event) {
+        xAxisSignalID.setLowerBound(0);
+        xAxisSignalID.setUpperBound(80);
+        yAxisSignalID.setLowerBound(-5);
+        yAxisSignalID.setUpperBound(5);
+    }
+
+    public void OnZoomProcessedSignal(ActionEvent event) {
+        signalGraph.zoomOnRectangle(new Rectangle(zoomRectProcessedSignal.getX(), zoomRectProcessedSignal.getY(), zoomRectProcessedSignal.getWidth(), zoomRectProcessedSignal.getHeight()), xAxisProcessedSignalID, yAxisProcessedSignalID);
+        zoomRectProcessedSignal.setFill(null);
+    }
+
+    public void OnResetProcessedSignal(ActionEvent event) {
+
+//        by default
+        xAxisProcessedSignalID.setLowerBound(0);
+        xAxisProcessedSignalID.setUpperBound(80);
+        yAxisProcessedSignalID.setLowerBound(-5);
+        yAxisProcessedSignalID.setUpperBound(5);
+
+//        for specific graphics
+//        xAxisProcessedSignalID.setLowerBound(0);
+//        xAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getEndIntv());
+//        yAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getMaxValue());
+//        yAxisProcessedSignalID.setLowerBound(signalGraphProcessed.getMinValue());
     }
 }

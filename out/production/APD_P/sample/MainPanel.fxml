@@ -11,20 +11,20 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1680.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.MainController">
+<AnchorPane fx:id="AnchorPaneID" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1680.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.MainController">
    <children>
-      <LineChart fx:id="signalId" layoutX="14.0" layoutY="34.0" legendVisible="false" prefHeight="497.0" prefWidth="800.0" title="Signal">
+      <LineChart fx:id="signalId" layoutX="14.0" layoutY="34.0" legendVisible="false" prefHeight="497.0" prefWidth="865.0" title="Signal" AnchorPane.bottomAnchor="189.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="866.0" AnchorPane.topAnchor="34.0">
          <xAxis>
-            <NumberAxis autoRanging="false" lowerBound="0" side="BOTTOM" tickUnit="1" upperBound="20" />
+            <NumberAxis autoRanging="false" lowerBound="0" side="BOTTOM" tickUnit="1" upperBound="32" fx:id="xAxisSignalID" />
          </xAxis>
          <yAxis>
-            <NumberAxis autoRanging="false" lowerBound="-5" side="LEFT" tickUnit="1" upperBound="5" />
+            <NumberAxis fx:id="yAxisSignalID" autoRanging="false" lowerBound="-5" side="LEFT" tickUnit="1" upperBound="5" />
          </yAxis>
          <cursor>
             <Cursor fx:constant="CROSSHAIR" />
          </cursor>
       </LineChart>
-      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1680.0">
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1680.0" AnchorPane.bottomAnchor="693.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="2.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -45,27 +45,37 @@
           </Menu>
         </menus>
       </MenuBar>
-      <LineChart fx:id="processedSignalId" layoutX="866.0" layoutY="34.0" legendVisible="false" prefHeight="497.0" prefWidth="800.0" title="Processed Signal">
+      <LineChart fx:id="processedSignalId" layoutX="866.0" layoutY="34.0" legendVisible="false" prefHeight="497.0" prefWidth="800.0" title="Processed Signal" AnchorPane.bottomAnchor="189.0" AnchorPane.leftAnchor="866.0" AnchorPane.topAnchor="34.0">
          <xAxis>
-            <NumberAxis autoRanging="false" lowerBound="0" side="BOTTOM" tickUnit="1" upperBound="20" />
+            <NumberAxis autoRanging="false" lowerBound="0" side="BOTTOM" tickUnit="1" upperBound="32" fx:id="xAxisProcessedSignalID" />
          </xAxis>
          <yAxis>
-            <NumberAxis autoRanging="false" lowerBound="-5" side="LEFT" tickUnit="1" upperBound="5" />
+            <NumberAxis fx:id="yAxisProcessedSignalID" autoRanging="false" lowerBound="-5" side="LEFT" tickUnit="1" upperBound="5" />
          </yAxis>
          <cursor>
             <Cursor fx:constant="CROSSHAIR" />
          </cursor>
       </LineChart>
-      <Label layoutX="14.0" layoutY="698.0" text="2019 - 2020 Manastireanu Andrei-Dany" />
-      <Button fx:id="buttonGenerateSignal" layoutX="794.0" layoutY="671.0" mnemonicParsing="false" onAction="#init" text="InitAllControlsAndGraph" />
+      <Label layoutX="14.0" layoutY="698.0" text="2019 - 2020 Manastireanu Andrei-Dany" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="14.0" />
+      <Button fx:id="buttonGenerateSignal" layoutX="794.0" layoutY="671.0" mnemonicParsing="false" onAction="#init" text="InitAllControlsAndGraph" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="794.0" AnchorPane.rightAnchor="741.0" AnchorPane.topAnchor="671.0" />
       <Button layoutX="919.0" layoutY="587.0" mnemonicParsing="false" onAction="#onDerivate" text="Derivate" />
       <Button layoutX="997.0" layoutY="587.0" mnemonicParsing="false" onAction="#onIntegrate" text="Integrate" />
-      <Slider fx:id="sliderStep" blockIncrement="0.1" layoutX="58.0" layoutY="650.0" max="1.0" onMouseReleased="#onMouseSlide" showTickLabels="true" showTickMarks="true" />
-      <Label fx:id="labelSlider" layoutX="215.0" layoutY="650.0" />
-      <Button layoutX="58.0" layoutY="562.0" mnemonicParsing="false" onAction="#onSine" text="Sine" />
-      <Button layoutX="108.0" layoutY="562.0" mnemonicParsing="false" onAction="#onCosine" text="Cosine" />
-      <Button layoutX="170.0" layoutY="562.0" mnemonicParsing="false" onAction="#onExponential" text="Exponential" />
+      <Slider fx:id="sliderStep" blockIncrement="50.0" layoutX="58.0" layoutY="650.0" max="10000.0" min="100.0" onMouseReleased="#onMouseSlide" prefHeight="33.0" prefWidth="189.0" showTickLabels="true" showTickMarks="true" AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="58.0" AnchorPane.rightAnchor="1433.0" AnchorPane.topAnchor="650.0" />
+      <Label fx:id="labelSlider" layoutX="287.0" layoutY="650.0" prefHeight="17.0" prefWidth="120.0" AnchorPane.bottomAnchor="53.0" AnchorPane.leftAnchor="287.0" AnchorPane.rightAnchor="1273.0" AnchorPane.topAnchor="650.0" />
+      <Button layoutX="58.0" layoutY="562.0" mnemonicParsing="false" onAction="#onSine" text="Sine" AnchorPane.bottomAnchor="133.0" AnchorPane.leftAnchor="58.0" />
+      <Button layoutX="108.0" layoutY="562.0" mnemonicParsing="false" onAction="#onCosine" text="Cosine" AnchorPane.bottomAnchor="133.0" AnchorPane.leftAnchor="108.0" AnchorPane.rightAnchor="1520.0" AnchorPane.topAnchor="562.0" />
+      <Button layoutX="169.0" layoutY="562.0" mnemonicParsing="false" onAction="#onExponential" text="Exponential" AnchorPane.bottomAnchor="133.0" AnchorPane.topAnchor="562.0" />
       <Button layoutX="1078.0" layoutY="587.0" mnemonicParsing="false" onAction="#onLowPass" text="Low pass" />
       <Button layoutX="1159.0" layoutY="587.0" mnemonicParsing="false" onAction="#onHighPass" text="High pass" />
+      <Label fx:id="labelXYSignal" layoutX="285.0" layoutY="562.0" prefHeight="25.0" prefWidth="129.0" AnchorPane.bottomAnchor="133.0" AnchorPane.leftAnchor="285.0" AnchorPane.rightAnchor="1266.0" AnchorPane.topAnchor="562.0" />
+      <Label fx:id="labelXYProcessedSignal" layoutX="1266.0" layoutY="587.0" prefHeight="25.0" prefWidth="129.0" AnchorPane.bottomAnchor="108.0" AnchorPane.leftAnchor="1266.0" AnchorPane.rightAnchor="285.0" AnchorPane.topAnchor="587.0" />
+      <Label layoutX="96.0" layoutY="626.0" text="Sample frequency - Hz" AnchorPane.bottomAnchor="77.0" AnchorPane.leftAnchor="96.0" AnchorPane.rightAnchor="1463.0" AnchorPane.topAnchor="626.0" />
+      <Label layoutX="751.0" layoutY="482.0" text="seconds" textFill="WHITE" />
+      <Label layoutX="1603.0" layoutY="482.0" text="seconds" textFill="WHITE" />
+      <Button fx:id="loadButton" layoutX="347.0" layoutY="614.0" mnemonicParsing="false" onAction="#onLoadFileButton" text="ImedLoad" />
+      <Button fx:id="doZoomSignal" layoutX="364.0" layoutY="562.0" mnemonicParsing="false" onAction="#onZoomSignal" text="DoZoom" textFill="#ff6100" />
+      <Button fx:id="resetZoomSignal" layoutX="452.0" layoutY="562.0" mnemonicParsing="false" onAction="#onResetZoomSignal" text="ResetZoom" textFill="#ff6100" />
+      <Button fx:id="zoomProcessedSignal" layoutX="1290.0" layoutY="587.0" mnemonicParsing="false" onAction="#OnZoomProcessedSignal" text="DoZoom" textFill="#ff6100" />
+      <Button fx:id="resetZoomProcessedSignal" layoutX="1395.0" layoutY="587.0" mnemonicParsing="false" onAction="#OnResetProcessedSignal" text="ResetZoom" textFill="#ff6100" />
    </children>
 </AnchorPane>
