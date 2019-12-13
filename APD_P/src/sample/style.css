@@ -1,0 +1,31 @@
+/*Style sheet for window*/
+
+.chart-vertical-zero-line {
+    -fx-stroke: #fff105;
+}
+.chart-horizontal-zero-line {
+    -fx-stroke: #ffef00;
+}
+
+.chart-plot-background {
+    -fx-background-color: rgba(0, 0, 0, 0.83);
+    -fx-foreground-color: white;
+    -fx-stroke: white;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: rgb(183, 182, 181);
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: rgb(183, 182, 181);
+}
+
+.axis {
+    -fx-stroke: #050305;
+    -fx-fill: #050305;
+    -fx-font-size: 1.4em;
+    -fx-tick-label-fill: #050305;
+    -fx-font-family: Consolas;
+    -fx-tick-length: 0;
+    -fx-minor-tick-length: 0;
+}

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="AnchorPaneID" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="722.0" prefWidth="1680.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.MainController">
+   <children>
+      <LineChart fx:id="signalId" layoutX="14.0" layoutY="34.0" legendVisible="false" prefHeight="497.0" prefWidth="865.0" title="Signal" AnchorPane.bottomAnchor="189.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="866.0" AnchorPane.topAnchor="34.0">
+         <xAxis>
+            <NumberAxis autoRanging="false" lowerBound="0" side="BOTTOM" tickUnit="1" upperBound="32" fx:id="xAxisSignalID" />
+         </xAxis>
+         <yAxis>
+            <NumberAxis fx:id="yAxisSignalID" autoRanging="false" lowerBound="-5" side="LEFT" tickUnit="1" upperBound="5" />
+         </yAxis>
+         <cursor>
+            <Cursor fx:constant="CROSSHAIR" />
+         </cursor>
+      </LineChart>
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1680.0" AnchorPane.bottomAnchor="693.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="2.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="newFile" mnemonicParsing="false" onAction="#onNewFile" text="New" />
+                  <MenuItem fx:id="loadFile" mnemonicParsing="false" onAction="#onLoadFile" text="Load" />
+                  <MenuItem fx:id="saveFile" mnemonicParsing="false" onAction="#onSaveFile" text="Save" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem fx:id="deleteFile" mnemonicParsing="false" onAction="#onDeleteFile" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem fx:id="about" mnemonicParsing="false" onAction="#onAboutProgram" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <LineChart fx:id="processedSignalId" layoutX="866.0" layoutY="34.0" legendVisible="false" prefHeight="497.0" prefWidth="800.0" title="Processed Signal" AnchorPane.bottomAnchor="189.0" AnchorPane.leftAnchor="866.0" AnchorPane.topAnchor="34.0">
+         <xAxis>
+            <NumberAxis autoRanging="false" lowerBound="0" side="BOTTOM" tickUnit="1" upperBound="32" fx:id="xAxisProcessedSignalID" />
+         </xAxis>
+         <yAxis>
+            <NumberAxis fx:id="yAxisProcessedSignalID" autoRanging="false" lowerBound="-5" side="LEFT" tickUnit="1" upperBound="5" />
+         </yAxis>
+         <cursor>
+            <Cursor fx:constant="CROSSHAIR" />
+         </cursor>
+      </LineChart>
+      <Label layoutX="14.0" layoutY="698.0" text="2019 - 2020 Manastireanu Andrei-Dany" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="14.0" />
+      <Button fx:id="buttonGenerateSignal" layoutX="776.0" layoutY="671.0" mnemonicParsing="false" onAction="#init" text="InitAllControlsAndGraph" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="776.0" AnchorPane.rightAnchor="759.0" AnchorPane.topAnchor="671.0" />
+      <Button layoutX="919.0" layoutY="587.0" mnemonicParsing="false" onAction="#onDerivate" text="Derivate" />
+      <Button layoutX="997.0" layoutY="587.0" mnemonicParsing="false" onAction="#onIntegrate" text="Integrate" />
+      <Slider fx:id="sliderStep" blockIncrement="50.0" layoutX="58.0" layoutY="650.0" max="10000.0" min="100.0" onMouseReleased="#onMouseSlide" prefHeight="33.0" prefWidth="189.0" showTickLabels="true" showTickMarks="true" AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="58.0" AnchorPane.rightAnchor="1433.0" AnchorPane.topAnchor="650.0" />
+      <Label fx:id="labelSlider" layoutX="287.0" layoutY="650.0" prefHeight="17.0" prefWidth="120.0" AnchorPane.bottomAnchor="53.0" AnchorPane.leftAnchor="287.0" AnchorPane.rightAnchor="1273.0" AnchorPane.topAnchor="650.0" />
+      <Button layoutX="58.0" layoutY="562.0" mnemonicParsing="false" onAction="#onSine" text="Sine" AnchorPane.bottomAnchor="133.0" AnchorPane.leftAnchor="58.0" />
+      <Button layoutX="108.0" layoutY="562.0" mnemonicParsing="false" onAction="#onCosine" text="Cosine" AnchorPane.bottomAnchor="133.0" AnchorPane.leftAnchor="108.0" AnchorPane.rightAnchor="1520.0" AnchorPane.topAnchor="562.0" />
+      <Button layoutX="169.0" layoutY="562.0" mnemonicParsing="false" onAction="#onExponential" text="Exponential" AnchorPane.bottomAnchor="133.0" AnchorPane.topAnchor="562.0" />
+      <Button layoutX="1078.0" layoutY="587.0" mnemonicParsing="false" onAction="#onLowPass" text="Low pass" />
+      <Button layoutX="1159.0" layoutY="587.0" mnemonicParsing="false" onAction="#onHighPass" text="High pass" />
+      <Label fx:id="labelXYSignal" layoutX="285.0" layoutY="562.0" prefHeight="25.0" prefWidth="129.0" AnchorPane.bottomAnchor="133.0" AnchorPane.leftAnchor="285.0" AnchorPane.rightAnchor="1266.0" AnchorPane.topAnchor="562.0" />
+      <Label fx:id="labelXYProcessedSignal" layoutX="1266.0" layoutY="587.0" prefHeight="25.0" prefWidth="129.0" AnchorPane.bottomAnchor="108.0" AnchorPane.leftAnchor="1266.0" AnchorPane.rightAnchor="285.0" AnchorPane.topAnchor="587.0" />
+      <Label layoutX="96.0" layoutY="626.0" text="Sample frequency - Hz" AnchorPane.bottomAnchor="77.0" AnchorPane.leftAnchor="96.0" AnchorPane.rightAnchor="1463.0" AnchorPane.topAnchor="626.0" />
+      <Label layoutX="751.0" layoutY="482.0" text="seconds" textFill="WHITE" />
+      <Label layoutX="1603.0" layoutY="482.0" text="seconds" textFill="WHITE" />
+      <Button fx:id="loadButton" layoutX="814.0" layoutY="640.0" mnemonicParsing="false" onAction="#onLoadFileButton" text="ImedLoad" />
+      <Button fx:id="doZoomSignal" layoutX="364.0" layoutY="562.0" mnemonicParsing="false" onAction="#onZoomSignal" text="DoZoom" textFill="#ff6100" />
+      <Button fx:id="resetZoomSignal" layoutX="452.0" layoutY="562.0" mnemonicParsing="false" onAction="#onResetZoomSignal" text="ResetZoom" textFill="#ff6100" />
+      <Button fx:id="zoomProcessedSignal" layoutX="1290.0" layoutY="587.0" mnemonicParsing="false" onAction="#OnZoomProcessedSignal" text="DoZoom" textFill="#ff6100" />
+      <Button fx:id="resetZoomProcessedSignal" layoutX="1395.0" layoutY="587.0" mnemonicParsing="false" onAction="#OnResetProcessedSignal" text="ResetZoom" textFill="#ff6100" />
+      <Button layoutX="997.0" layoutY="638.0" mnemonicParsing="false" onAction="#onFilterWithAlpha" text="Filtrare cu Alpha" />
+      <Button layoutX="1000.0" layoutY="680.0" mnemonicParsing="false" onAction="#onMediere" text="Mediere" />
+      <Slider fx:id="idAlphaFilted" blockIncrement="0.1" layoutX="1110.0" layoutY="644.0" max="0.9" onMouseReleased="#onMouseReleasedSliderAlpha" showTickLabels="true" showTickMarks="true" />
+      <Slider fx:id="idMediereFilter" blockIncrement="16.0" layoutX="1110.0" layoutY="685.0" max="32.0" min="16.0" onMouseReleased="#onMouseRelesedMediere" showTickLabels="true" showTickMarks="true" />
+      <Label fx:id="idAlphaLabel" layoutX="1266.0" layoutY="644.0" text="Alpha" />
+      <Label fx:id="idMediereLabel" layoutX="1266.0" layoutY="689.0" text="2^n" />
+      <Button layoutX="463.0" layoutY="688.0" mnemonicParsing="false" onAction="#onWindowing" text="RectangularWindow" />
+      <TextField fx:id="startWindow" layoutX="462.0" layoutY="653.0" prefHeight="25.0" prefWidth="60.0" />
+      <TextField fx:id="endWindow" layoutX="526.0" layoutY="653.0" prefHeight="25.0" prefWidth="60.0" />
+   </children>
+</AnchorPane>
