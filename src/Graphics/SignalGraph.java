@@ -114,9 +114,6 @@ public class SignalGraph {
     }
 
     public void plotGraph(Function<Double, Double> function) {
-        //populating the series with data
-
-        //clear something value if you want try again plot
 
         for(double i = 0; i < 32; i+=0.5) {
             seriesPoints.getData().add(new Data(i, function.apply(i)));
@@ -142,8 +139,6 @@ public class SignalGraph {
 
     public void loadFromFile() {
 
-        //  function to read from file
-
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(null);
 
@@ -167,7 +162,6 @@ public class SignalGraph {
 
     public void loadFromFile(String file) {
 
-        //  function to read from file
         File selectedFile = new File(file);
 
         if(selectedFile == null) {
@@ -292,11 +286,9 @@ public class SignalGraph {
 
     public void applyFilter(SignalGraph filteredSignal, Double steps, double[] filter, int range, double frequency) {
 
-
         XYChart.Series<Double, Double> series = new XYChart.Series<>();
         ArrayList<Double> valuesFiltered = new ArrayList<>();
         double temporarySum = 0;
-        int offset = range / 2;
 
         // get all point from graph_1
         if(!values.isEmpty()) {
@@ -341,6 +333,88 @@ public class SignalGraph {
 
     }
 
+    public void alphaFilter(SignalGraph filteredSignal, Double steps, double alpha, double frequency) {
+
+        XYChart.Series<Double, Double> series = new XYChart.Series<>();
+        ArrayList<Double> valuesFiltered = new ArrayList<>(); // get all point from graph_1
+        if(!values.isEmpty()) {
+            values.clear();
+        }
+
+        for(Data<Double, Double> entry : seriesPoints.getData()) {
+            values.add(entry.getYValue());
+        }
+
+        if(!values.isEmpty()) {
+            filteredSignal.getLineGraph().getData().clear();
+            valuesFiltered.add(values.get(0));
+            for(int i = 1; i < values.size(); ++i) {
+                valuesFiltered.add((1 - alpha) * values.get(i-1) + alpha*values.get(i));
+            }
+            int endIntv = (int)(valuesFiltered.size() * 1.0/frequency);
+
+            filteredSignal.setMinValue(Collections.min(valuesFiltered));
+            filteredSignal.setMaxValue(Collections.max(valuesFiltered));
+            filteredSignal.setNoPoints(valuesFiltered.size());
+
+            for(double i = 0; i < endIntv; i+=steps) {
+                if(!valuesFiltered.isEmpty())
+                    series.getData().add(new Data<>(i, valuesFiltered.remove(0)));
+                else
+                    break;
+            }
+
+            filteredSignal.setSeriesPoints(series);
+            filteredSignal.getLineGraph().getData().add(series);
+
+        } else {
+            System.out.println("Empty list with no points");
+        }
+    }
+
+    public void mediereFilter(SignalGraph filteredSignal, Double steps, double frequency, int segment) {
+        XYChart.Series<Double, Double> series = new XYChart.Series<>();
+        ArrayList<Double> valuesFiltered = new ArrayList<>(); // get all point from graph_1
+        double partialSum = 0.0;
+
+        if(!values.isEmpty()) {
+            values.clear();
+        }
+
+        for(Data<Double, Double> entry : seriesPoints.getData()) {
+            values.add(entry.getYValue());
+        }
+
+        if(!values.isEmpty()) {
+            filteredSignal.getLineGraph().getData().clear();
+            for(int i = 0; i < values.size(); ++i) {
+                for(int j = i; j < segment && j < values.size(); ++j){
+                    partialSum += values.get(j);
+                }
+                valuesFiltered.add(partialSum / segment);
+                partialSum = 0.0;
+            }
+            int endIntv = (int)(valuesFiltered.size() * 1.0/frequency);
+
+            filteredSignal.setMinValue(Collections.min(valuesFiltered));
+            filteredSignal.setMaxValue(Collections.max(valuesFiltered));
+            filteredSignal.setNoPoints(valuesFiltered.size());
+
+            for(double i = 0; i < endIntv; i+=steps) {
+                if(!valuesFiltered.isEmpty())
+                    series.getData().add(new Data<>(i, valuesFiltered.remove(0)));
+                else
+                    break;
+            }
+
+            filteredSignal.setSeriesPoints(series);
+            filteredSignal.getLineGraph().getData().add(series);
+
+        } else {
+            System.out.println("Empty list with no points");
+        }
+    }
+
     public void zoomOnRectangle(Rectangle zoomRect, NumberAxis xAxis, NumberAxis yAxis) {
         Point2D zoomTopLeft = new Point2D(zoomRect.getX(), zoomRect.getY());
         Point2D zoomBottomRight = new Point2D(zoomRect.getX() + zoomRect.getWidth(), zoomRect.getY() + zoomRect.getHeight());
@@ -356,5 +430,44 @@ public class SignalGraph {
         yAxis.setUpperBound(yAxis.getLowerBound() - zoomRect.getHeight() / yAxisScale);
         zoomRect.setWidth(0);
         zoomRect.setHeight(0);
+    }
+
+    public void sqareWindowing(int sInv, int eIntv, double period) {
+        XYChart.Series<Double, Double> series = new XYChart.Series<>();
+        ArrayList<Double> selectedValues = new ArrayList<>();
+        double sumPeriod = 0;
+
+        if(!values.isEmpty()) {
+            values.clear();
+        }
+
+        for(Data<Double, Double> entry : seriesPoints.getData()) {
+            values.add(entry.getYValue());
+        }
+
+        for(int i = 0; i < values.size(); ++i) {
+            if(sumPeriod > sInv && sumPeriod < eIntv) {
+                selectedValues.add(values.get(i));
+            }
+            if(sumPeriod > eIntv)
+                break;
+            sumPeriod += period;
+        }
+
+        if(!selectedValues.isEmpty()) {
+            getLineGraph().getData().clear();
+            for(double i = 0; i < selectedValues.size(); i += period){
+                if(!selectedValues.isEmpty())
+                    series.getData().add(new Data<>(i, selectedValues.remove(0)));
+                else
+                    break;
+            }
+        }
+
+
+        setSeriesPoints(series);
+        getLineGraph().getData().add(series);
+
+
     }
 }

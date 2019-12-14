@@ -20,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.converter.NumberStringConverter;
 
 public class MainController {
 
@@ -30,6 +31,8 @@ public class MainController {
     @FXML
     private Button buttonGenerateSignal;
     @FXML
+    private TextField startWindow, endWindow;
+    @FXML
     private MenuItem newFile, loadFile, saveFile, deleteFile, about;
     @FXML
     private LineChart<Double, Double> signalId, processedSignalId;
@@ -37,9 +40,9 @@ public class MainController {
 
     //  slider
     @FXML
-    private Slider sliderStep;
+    private Slider sliderStep, idAlphaFilted, idMediereFilter;
     @FXML
-    private Label labelSlider, labelXYSignal, labelXYProcessedSignal;
+    private Label labelSlider, labelXYSignal, labelXYProcessedSignal, idAlphaLabel, idMediereLabel;
 
     private int endIntv = 32;
 
@@ -53,8 +56,15 @@ public class MainController {
         labelXYProcessedSignal.setVisible(true);
         labelXYSignal.setVisible(true);
 
+        idAlphaLabel.setText(String.format(idAlphaFilted.valueProperty().getValue().toString(), ".2f"));
+        idMediereLabel.setText(String.format(idMediereFilter.valueProperty().getValue().toString(), ".2f"));
+
         labelSlider.setText(String.format(sliderStep.valueProperty().getValue().toString(), ".2f"));
         Double valueSlider = 1 / sliderStep.getValue();
+
+
+        startWindow.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
+        endWindow.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
 
         //  check value not be 0.0
         if(valueSlider == 0.0)
@@ -238,11 +248,57 @@ public class MainController {
         xAxisProcessedSignalID.setUpperBound(80);
         yAxisProcessedSignalID.setLowerBound(-5);
         yAxisProcessedSignalID.setUpperBound(5);
+    }
 
-//        for specific graphics
-//        xAxisProcessedSignalID.setLowerBound(0);
-//        xAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getEndIntv());
-//        yAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getMaxValue());
-//        yAxisProcessedSignalID.setLowerBound(signalGraphProcessed.getMinValue());
+
+    public void onFilterWithAlpha(ActionEvent event) {
+        signalGraph.alphaFilter(signalGraphProcessed, 1.0/sliderStep.getValue(), idAlphaFilted.getValue(), sliderStep.getValue());
+
+        yAxisProcessedSignalID.setLowerBound(signalGraphProcessed.getMinValue() - 1.0);
+        yAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getMaxValue() + 1.0);
+        xAxisProcessedSignalID.setUpperBound(signalGraphProcessed.getNoPoints() * 1/sliderStep.getValue());
+    }
+
+    public void onMediere(ActionEvent event) {
+        signalGraph.mediereFilter(signalGraphProcessed, 1.0 / sliderStep.getValue(), sliderStep.getValue(), (int)idMediereFilter.getValue());
+    }
+
+    public void onMouseReleasedSliderAlpha(MouseEvent mouseEvent) {
+        idAlphaFilted.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldVal, Number newVal) {
+                idAlphaLabel.setText(String.format("%.2f", newVal));
+            }
+        });
+    }
+
+    public void onMouseRelesedMediere(MouseEvent mouseEvent) {
+        idMediereFilter.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldVal, Number newVal) {
+                idMediereLabel.setText(String.format("%d", (int)newVal));
+            }
+        });
+
+    }
+
+    public void onWindowing(ActionEvent event) {
+
+
+        boolean isNumeric = true;
+        int startGraphIntv = 0, endtGraphIntv = 0;
+
+        try{
+            startGraphIntv = Integer.parseInt(startWindow.getText());
+            endtGraphIntv = Integer.parseInt(endWindow.getText());
+        } catch (NumberFormatException e) {
+            isNumeric = false;
+            System.out.println(e.getMessage());
+        }
+
+        if (isNumeric)
+            if(startGraphIntv < endtGraphIntv && signalGraph != null)
+                signalGraph.sqareWindowing(startGraphIntv, endtGraphIntv, 1.0/sliderStep.getValue());
+
     }
 }
